@@ -14,10 +14,12 @@ using namespace std;
 #define pii pair<int, int>
 #define pll pair<long long, long long>
 #define vi vector<int>
+#define vs vector<string>
 #define vc vector<char>
 #define vvi vector<vector<int>>
 #define vll vector<long long>
 #define vvl vector<vector<long long>>
+#define vvvl vector<vector<vector<long long>>>
 #define vpii vector<pair<int,int>>
 #define vpll vector<pair<long,long>>
 #define mii map<int, int>
@@ -53,6 +55,7 @@ using ordered_set=__gnu_pbds::tree<
 
 // custom map
 struct chash{ static uint64_t splitmix64(uint64_t x){ x+=0x9e3779b97f4a7c15;x=(x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;x=(x ^ (x >> 27)) * 0x94d049bb133111eb;return x ^ (x >> 31); }size_t operator()(uint64_t x) const{ static const uint64_t FIXED_RANDOM=chrono::steady_clock::now().time_since_epoch().count();return splitmix64(x + FIXED_RANDOM); } };
+struct pair_hash{ static uint64_t splitmix64(uint64_t x){ x+=0x9e3779b97f4a7c15;x=(x^(x>>30))*0xbf58476d1ce4e5b9;x=(x^(x>>27))*0x94d049bb133111eb;return x^(x>>31); }size_t operator()(pii x)const{ static const uint64_t FIXED_RANDOM=chrono::steady_clock::now().time_since_epoch().count();return splitmix64(x.first+FIXED_RANDOM)^(splitmix64(x.second+FIXED_RANDOM)>>1); } };
 
 template<typename T1,typename T2>
 using safe_map=unordered_map<T1,T2,chash>;
@@ -60,61 +63,31 @@ using safe_map=unordered_map<T1,T2,chash>;
 
 // input
 template <typename T>
-istream& operator>>(istream& in,vector<T>& a){
-    for(auto& x : a) in >> x;
-    return in;
-}
+istream& operator>>(istream& in,vector<T>& a){ for(auto& x : a) in >> x;return in; }
 
 template <typename T>
-ostream& operator<<(ostream& out,const vector<T>& a){
-    for(const auto& x : a) out << x << " ";
-    return out;
-}
+ostream& operator<<(ostream& out,const vector<T>& a){ for(const auto& x : a) out << x << " ";return out; }
 
 template <typename T>
-istream& operator>>(istream& in,vector<vector<T>>& a){
-    for(auto& row : a) in >> row;
-    return in;
-}
+istream& operator>>(istream& in,vector<vector<T>>& a){ for(auto& row : a) in >> row;return in; }
 
 template <typename T>
-ostream& operator<<(ostream& out,const vector<vector<T>>& a){
-    for(const auto& row : a) out << row << "\n";
-    return out;
-}
+ostream& operator<<(ostream& out,const vector<vector<T>>& a){ for(const auto& row : a) out << row << endl;return out; }
 
 template <typename T1,typename T2>
-istream& operator>>(istream& in,vector<pair<T1,T2>>& a){
-    for(auto& x : a) in >> x.first >> x.second;
-    return in;
-}
+istream& operator>>(istream& in,vector<pair<T1,T2>>& a){ for(auto& x : a) in >> x.first >> x.second;return in; }
 
 template <typename T1,typename T2>
-ostream& operator<<(ostream& out,const vector<pair<T1,T2>>& a){
-    for(const auto& x : a) out << x.first << " " << x.second << endl;
-    return out;
-}
-
+ostream& operator<<(ostream& out,const vector<pair<T1,T2>>& a){ for(const auto& x : a) out << x.first << " " << x.second << endl;return out; }
 
 // arrays
-template <typename T>
-vector<int> allOccur(const vector<T>& a,T e){
-    vector<int> indices;
-    for(int i=0; i < a.size(); ++i){
-        if(a[i] == e) indices.push_back(i);
-    }
-    return indices;
-}
+template <typename T> // get indices all occurrences of an element
+vector<int> allOccur(const vector<T>& a,T e){ vector<int> indices;for(int i=0; i < a.size(); ++i){ if(a[i] == e) indices.push_back(i); }return indices; }
 
-template <typename T>
-T gcdArr(vector<T>& a){
-    return accumulate(a.begin() + 1,a.end(),a[0],[](T x,T y){
-        return gcd(x,y);
-    });
-}
+template <typename T> // gcd of array
+T gcdArr(vector<T>& a){ return accumulate(a.begin() + 1,a.end(),a[0],[](T x,T y){return gcd(x,y);}); }
 
 // functions
-
 ll min(ll a,int b){ if(a < b) return a; return b; }
 ll min(int a,ll b){ if(a < b) return a; return b; }
 ll max(ll a,int b){ if(a > b) return a; return b; }
@@ -132,16 +105,8 @@ bool prime(ll a){ if(a == 1) return 0; for(int i=2; i <= round(sqrt(a)); ++i) if
 void printYes(){ cout << "yes\n"; }
 void printNo(){ cout << "no\n"; }
 
-template<typename T>
-T greatestFactor(T n){
-    if(n <= 1) return n;
-    for(T i=n / 2; i >= 1; --i){
-        if(n % i == 0){
-            return i;
-        }
-    }
-    return -1;
-}
+template<typename T> // get greatest factor of number
+T greatestFactor(T n){ if(n <= 1) return n;for(T i=n / 2; i >= 1; --i){ if(n % i == 0){ return i; } }return -1; }
 
 // preprocessor
 typedef long int int32;
@@ -150,53 +115,14 @@ typedef long long int int64;
 typedef unsigned long long int uint64;
 
 // int to binary string (bits)
-string binstr(int n){
-    return std::bitset<32>(n).to_string();
-}
-string binstr(long n){
-    return std::bitset<64>(n).to_string();  // 64 bits for long
-}
-string binstr(long long n){
-    return std::bitset<64>(n).to_string();  // 64 bits for long long
-}
+string binstr(int n){ return std::bitset<32>(n).to_string(); }
+string binstr(long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long
+string binstr(long long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long long
 
 // DSU
 class DSU{
-public:
-    vector<int> par,rank;
-    DSU(int n){
-        par.resize(n);
-        rank.resize(n,0);
-        for(int i=0; i < n; i++){
-            par[i]=i;
-        }
-    }
-
-    int find(int x){
-        if(par[x] == x){
-            return x;
-        }
-        return par[x]=find(par[x]);
-    }
-
-    void unite(int x,int y){
-        int x_par=find(x);
-        int y_par=find(y);
-        if(x_par != y_par){
-            if(rank[x_par] > rank[y_par]){
-                par[y_par]=x_par;
-            }
-            else if(rank[x_par] < rank[y_par]){
-                par[x_par]=y_par;
-            }
-            else{
-                par[y_par]=x_par;
-                rank[x_par]++;
-            }
-        }
-    }
+public:vector<int>par,rank;DSU(int n){ par.resize(n);rank.resize(n);for(int i=0;i<n;i++)par[i]=i; }int find(int x){ return par[x]==x?x:par[x]=find(par[x]); }void unite(int x,int y){ int xp=find(x),yp=find(y);if(xp!=yp){ if(rank[xp]>rank[yp])par[yp]=xp;else if(rank[xp]<rank[yp])par[xp]=yp;else par[yp]=xp,rank[xp]++; } }
 };
-
 
 // main
 void solve(){
@@ -207,10 +133,10 @@ void solve(){
 int main(){
     fastio();
 
-#ifndef ONLINE_JUDGE
-    freopen("input.txt","r",stdin);
-// freopen("output.txt","w",stdout);
-#endif
+// #ifndef ONLINE_JUDGE
+//     freopen("input.txt","r",stdin);
+// // freopen("output.txt","w",stdout);
+// #endif
 
     int tc=1;
     cin>>tc;
