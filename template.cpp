@@ -7,7 +7,7 @@ using namespace std;
 
 #define fastio() ios_base::sync_with_stdio(false);std::cin.tie(NULL);cout.tie(NULL)
 
-// types
+// macros
 #define ll long long
 #define lld long long double
 #define lli long long int
@@ -16,7 +16,9 @@ using namespace std;
 #define vi vector<int>
 #define vs vector<string>
 #define vc vector<char>
+#define vb vector<bool>
 #define vvi vector<vector<int>>
+#define vvvi vector<vector<vector<int>>>
 #define vll vector<long long>
 #define vvl vector<vector<long long>>
 #define vvvl vector<vector<vector<long long>>>
@@ -30,18 +32,15 @@ using namespace std;
 #define sc set<char>
 #define MOD 1000000007
 #define MOD1 998244353
-#define INF 1e18
 #define endl '\n'
 #define pb push_back
 #define ppb pop_back
-#define mp make_pair
 #define ff first
 #define ss second
 #define PI 3.1415926535897932384626433832795
 #define set_bits __builtin_popcountll
 #define sz(x) ((int)(x).size())
 #define all(x) (x).begin(), (x).end()
-#define forn(i,n) for(auto i=0; i<n; i++)
 
 // Ordered Set
 template <typename T,typename Compare=less<T>>
@@ -60,8 +59,7 @@ struct pair_hash{ static uint64_t splitmix64(uint64_t x){ x+=0x9e3779b97f4a7c15;
 template<typename T1,typename T2>
 using safe_map=unordered_map<T1,T2,chash>;
 
-
-// input
+// input and output
 template <typename T>
 istream& operator>>(istream& in,vector<T>& a){ for(auto& x : a) in >> x;return in; }
 
@@ -118,6 +116,9 @@ typedef unsigned long long int uint64;
 string binstr(int n){ return std::bitset<32>(n).to_string(); }
 string binstr(long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long
 string binstr(long long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long long
+
+// sieve
+vector<bool> sieve(int n){ vector<bool> p(n+1,1); p[0]=p[1]=0;for(int i=2;i*i<=n;i++) if(p[i]) for(int j=i*i;j<=n;j+=i) p[j]=0;return p; }
 
 // DSU
 class DSU{
