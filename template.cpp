@@ -125,7 +125,7 @@ public:vector<int>par,rank;DSU(int n){ par.resize(n);rank.resize(n);for(int i=0;
 };
 
 // main
-void solve(){
+void solve(ll tc){
 
 }
 
@@ -138,11 +138,11 @@ int main(){
 // // freopen("output.txt","w",stdout);
 // #endif
 
-    int tc=1;
+    ll tc=1;
     cin>>tc;
 
-    while(tc--){
-        solve();
+    for(ll i=1;i<=tc;i++){
+        solve(i);
     }
 
     return 0;
