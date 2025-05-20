@@ -78,6 +78,11 @@ istream& operator>>(istream& in,vector<pair<T1,T2>>& a){ for(auto& x : a) in >> 
 template <typename T1,typename T2>
 ostream& operator<<(ostream& out,const vector<pair<T1,T2>>& a){ for(const auto& x : a) out << x.first << " " << x.second << endl;return out; }
 
+template <typename T>
+void pl(const T& x){
+    cout<<x<<endl;
+}
+
 // arrays
 template <typename T> // get indices all occurrences of an element
 vector<int> allOccur(const vector<T>& a,T e){ vector<int> indices;for(int i=0; i < a.size(); ++i){ if(a[i] == e) indices.push_back(i); }return indices; }
@@ -105,17 +110,6 @@ void printNo(){ cout << "no\n"; }
 
 template<typename T> // get greatest factor of number
 T greatestFactor(T n){ if(n <= 1) return n;for(T i=n / 2; i >= 1; --i){ if(n % i == 0){ return i; } }return -1; }
-
-// preprocessor
-typedef long int int32;
-typedef unsigned long int uint32;
-typedef long long int int64;
-typedef unsigned long long int uint64;
-
-// int to binary string (bits)
-string binstr(int n){ return std::bitset<32>(n).to_string(); }
-string binstr(long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long
-string binstr(long long n){ return std::bitset<64>(n).to_string(); }  // 64 bits for long long
 
 // sieve
 vector<bool> sieve(int n){ vector<bool> p(n+1,1); p[0]=p[1]=0;for(int i=2;i*i<=n;i++) if(p[i]) for(int j=i*i;j<=n;j+=i) p[j]=0;return p; }
