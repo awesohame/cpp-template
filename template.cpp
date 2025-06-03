@@ -101,8 +101,8 @@ ll lcm(ll a, ll b) { return a / gcd(a, b) * b; }
 // utils
 #define yes printYes()
 #define no printNo()
-string to_upper(string a) { for(int i = 0; i < (int)a.size(); ++i) if(a[i] >= 'a' and a[i] <= 'z') a[i] -= 'a' - 'A'; return a; }
-string to_lower(string a) { for(int i = 0; i < (int)a.size(); ++i) if(a[i] >= 'A' and a[i] <= 'Z') a[i] += 'a' - 'A'; return a; }
+string to_upper(string a) { for(int i = 0; i < (int)a.size(); ++i) if(a[i] >= 'a' and a[i] <= 'z') a[i] -= 'a' - 'a'; return a; }
+string to_lower(string a) { for(int i = 0; i < (int)a.size(); ++i) if(a[i] >= 'a' and a[i] <= 'Z') a[i] += 'a' - 'a'; return a; }
 bool prime(ll a) { if(a == 1) return 0; for(int i = 2; i <= round(sqrt(a)); ++i) if(a % i == 0) return 0; return 1; }
 
 void printYes() { cout << "yes\n"; }
@@ -119,6 +119,132 @@ class DSU {
 public:vector<int>par, rank; DSU(int n) { par.resize(n); rank.resize(n); for(int i = 0; i < n; i++)par[i] = i; }int find(int x) { return par[x] == x ? x : par[x] = find(par[x]); }void unite(int x, int y) { int xp = find(x), yp = find(y); if(xp != yp) { if(rank[xp] > rank[yp])par[yp] = xp; else if(rank[xp] < rank[yp])par[xp] = yp; else par[yp] = xp, rank[xp]++; } }
 };
 
+// LazySGT
+template<typename Node, typename Update, typename T>
+class LazySGT {
+public:
+    vector<Node> tree;
+    vector<bool> lazy;
+    vector<Update> updates;
+    vector<T> arr;
+    int n;
+    int s;
+
+    LazySGT(int a_len, vector<T>& a) {
+        arr = a;
+        n = a_len;
+        s = 1;
+        while(s < 2 * n) {
+            s = s << 1;
+        }
+        tree.resize(s); fill(all(tree), Node()); // Node() gives identity node
+        lazy.resize(s); fill(all(lazy), false);
+        updates.resize(s); fill(all(updates), Update()); // Update() gives identity upd
+        build(0, n - 1, 1);
+    }
+
+    void build(int start, int end, int index) { // usually not edited
+        if(start == end) {
+            tree[index] = Node(arr[start]);  // initializes leaf node from input array
+            return;
+        }
+        int mid = (start + end) / 2;
+        build(start, mid, 2 * index);
+        build(mid + 1, end, 2 * index + 1);
+        tree[index].merge(tree[2 * index], tree[2 * index + 1]);  // merge logic comes from Node
+    }
+
+    void pushdown(int index, int start, int end) {  // no change unless modifying lazy logic
+        if(lazy[index]) {
+            int mid = (start + end) / 2;
+            apply(2 * index, start, mid, updates[index]);
+            apply(2 * index + 1, mid + 1, end, updates[index]);
+            updates[index] = Update();  // reset with identity update
+            lazy[index] = 0;
+        }
+    }
+
+    void apply(int index, int start, int end, Update& u) {
+        if(start != end) {
+            lazy[index] = 1;
+            updates[index].combine(u, start, end);  // combine with existing update
+        }
+        u.apply(tree[index], start, end);  // apply update to node (affects stored value)
+    }
+
+    void upd(int start, int end, int index, int left, int right, Update& u) {
+        if(start > right || end < left) return;
+        if(start >= left && end <= right) {
+            apply(index, start, end, u);
+            return;
+        }
+        pushdown(index, start, end);
+        int mid = (start + end) / 2;
+        upd(start, mid, 2 * index, left, right, u);
+        upd(mid + 1, end, 2 * index + 1, left, right, u);
+        tree[index].merge(tree[2 * index], tree[2 * index + 1]);
+    }
+
+    Node que(int start, int end, int index, int left, int right) {
+        if(start > right || end < left) return Node(); // return identity node
+        if(start >= left && end <= right) {
+            pushdown(index, start, end);
+            return tree[index];
+        }
+        pushdown(index, start, end);
+        int mid = (start + end) / 2;
+        Node l, r, ans;
+        l = que(start, mid, 2 * index, left, right);
+        r = que(mid + 1, end, 2 * index + 1, left, right);
+        ans.merge(l, r);
+        return ans;
+    }
+
+    void update(int left, int right, T val) {  // change if U pdate needs more than one value
+        Update new_update = Update(val);    // could change constructor
+        upd(0, n - 1, 1, left, right, new_update);
+    }
+
+    Node query(int left, int right) {
+        return que(0, n - 1, 1, left, right);
+    }
+};
+
+template<typename T>
+struct Node1 {
+    T val;  // sum, min, max, count
+    Node1() {
+        val = 0;  // identity value (0 for sum, INF for min)
+    }
+    Node1(T p1) {
+        val = p1;  // initialize with actual value from array
+    }
+    void merge(Node1& l, Node1& r) {
+        val = l.val + r.val;  // combine two children (+ for sum, min/max/GCD)
+    }
+};
+template<typename T>
+struct Update1 {
+    T val;  // update value (what to assign or add)
+
+    Update1() {
+        val = 0;  // identity update (0 for assignment override)
+    }
+
+    Update1(T val1) {
+        val = val1;
+    }
+
+    void apply(Node1& a, int start, int end) {
+        a.val = val * (end - start + 1);  // Apply update to node: range assignment, For range add: a.val += val * (end - start + 1);
+    }
+
+    void combine(Update1& new_update, int start, int end) {
+        val = new_update.val;  // combine updates (assignment: override, add: +=)
+    }
+};
+
+
 // main
 void solve(ll tc) {
 
@@ -128,14 +254,13 @@ void solve(ll tc) {
 int main() {
     fastio();
 
-// #ifndef ONLINE_JUDGE
-//     freopen("input.txt", "r", stdin);
-//     // freopen("output.txt", "w", stdout);
-// #endif
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
+#endif
 
     ll tc = 1;
     cin >> tc;
-
     for(ll i = 1; i <= tc; i++) {
         solve(i);
     }
