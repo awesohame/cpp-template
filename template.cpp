@@ -32,7 +32,6 @@ using namespace std;
 #define sc set<char>
 #define MOD 1000000007
 #define MOD1 998244353
-#define endl '\n'
 #define pb push_back
 #define ppb pop_back
 #define ff first
@@ -78,9 +77,11 @@ istream& operator>>(istream& in, vector<pair<T1, T2>>& a) { for(auto& x : a) in 
 template <typename T1, typename T2>
 ostream& operator<<(ostream& out, const vector<pair<T1, T2>>& a) { for(const auto& x : a) out << x.first << " " << x.second << endl; return out; }
 
-template <typename T>
-void pl(const T& x) {
-    cout << x << endl;
+template <typename T, typename... Args>
+void pl(const T& x, const Args&... args) {
+    cout << x;
+    ((cout << ' ' << args), ...);
+    cout << endl;
 }
 
 // arrays
@@ -235,7 +236,7 @@ struct Update1 {
         val = val1;
     }
 
-    void apply(Node1& a, int start, int end) {
+    void apply(Node1<T>& a, int start, int end) {
         a.val = val * (end - start + 1);  // Apply update to node: range assignment, For range add: a.val += val * (end - start + 1);
     }
 
