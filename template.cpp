@@ -83,6 +83,9 @@ void pl(const T& x, const Args&... args) {
     ((cout << ' ' << args), ...);
     cout << endl;
 }
+void pl() {
+    cout << endl;
+}
 
 // arrays
 template <typename T> // get indices all occurrences of an element
@@ -257,7 +260,7 @@ int main() {
 
 #ifndef ONLINE_JUDGE
     freopen("input.txt", "r", stdin);
-    // freopen("output.txt", "w", stdout);
+    freopen("output.txt", "w", stdout);
 #endif
 
     ll tc = 1;
