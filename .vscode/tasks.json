@@ -1,0 +1,74 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++ Debug",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-g",
+                "-D_GLIBCXX_DEBUG",
+                "-Wall",
+                "-Wextra",
+                "-Wshadow",
+                "-DDEBUG",
+                "${file}",
+                "-o",
+                "${fileBasenameNoExtension}.exe"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Build with debug flags and sanitizers",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Build C++ Release",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-O2",
+                "-Wall",
+                "-Wextra",
+                "${file}",
+                "-o",
+                "${fileBasenameNoExtension}.exe"
+            ],
+            "group": "build",
+            "detail": "Build optimized version",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$gcc"
+        },
+        {
+            "label": "Run C++ Debug",
+            "type": "shell",
+            "command": "${workspaceFolder}\\${fileBasenameNoExtension}.exe",
+            "dependsOn": "Build C++ Debug",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "detail": "Build and run with debug information",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            }
+        }
+    ]
+}
