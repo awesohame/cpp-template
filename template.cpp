@@ -40,6 +40,8 @@ using namespace std;
 #define set_bits __builtin_popcountll
 #define sz(x) ((int)(x).size())
 #define all(x) (x).begin(), (x).end()
+#define mkp make_pair
+#define mkt make_tuple
 
 // Ordered Set
 template <typename T, typename Compare = less<T>>
@@ -59,38 +61,17 @@ template<typename T1, typename T2>
 using safe_map = unordered_map<T1, T2, chash>;
 
 // input and output
-template <typename T>
-istream& operator>>(istream& in, vector<T>& a) { for(auto& x : a) in >> x; return in; }
+template <typename T> istream& operator>>(istream& in, vector<T>& a) { for(auto& x : a) in >> x; return in; }
+template <typename T> ostream& operator<<(ostream& out, const vector<T>& a) { for(const auto& x : a) out << x << " "; return out; }
+template <typename T> istream& operator>>(istream& in, vector<vector<T>>& a) { for(auto& row : a) in >> row; return in; }
+template <typename T> ostream& operator<<(ostream& out, const vector<vector<T>>& a) { for(const auto& row : a) out << row << '\n'; return out; }
+template <typename T1, typename T2> ostream& operator<<(ostream& out, const pair<T1, T2>& p) { return out << p.first << " " << p.second; }
+template <typename... Args> ostream& operator<<(ostream& out, const tuple<Args...>& t) { apply([&](const auto&... args) { ((out << args << " "), ...); }, t); return out; }
+template <typename... Args> istream& operator>>(istream& in, tuple<Args...>& t) { apply([&](auto&... args) { ((in >> args), ...); }, t); return in; }
 
-template <typename T>
-ostream& operator<<(ostream& out, const vector<T>& a) { for(const auto& x : a) out << x << " "; return out; }
-
-template <typename T>
-istream& operator>>(istream& in, vector<vector<T>>& a) { for(auto& row : a) in >> row; return in; }
-
-template <typename T>
-ostream& operator<<(ostream& out, const vector<vector<T>>& a) { for(const auto& row : a) out << row << endl; return out; }
-
-template <typename T1, typename T2>
-istream& operator>>(istream& in, vector<pair<T1, T2>>& a) { for(auto& x : a) in >> x.first >> x.second; return in; }
-
-template <typename T1, typename T2>
-ostream& operator<<(ostream& out, const vector<pair<T1, T2>>& a) { for(const auto& x : a) out << x.first << " " << x.second << endl; return out; }
-
-template <typename T, typename... Args>
-void pl(const T& x, const Args&... args) {
-    cout << x;
-    ((cout << ' ' << args), ...);
-    cout << endl;
-}
-void pl() {
-    cout << endl;
-}
+template <typename T, typename... Args> void pl(const T& x, const Args&... args) { cout << x; ((cout << ' ' << args), ...); cout << endl; }
 
 // arrays
-template <typename T> // get indices all occurrences of an element
-vector<int> allOccur(const vector<T>& a, T e) { vector<int> indices; for(int i = 0; i < a.size(); ++i) { if(a[i] == e) indices.push_back(i); }return indices; }
-
 template <typename T> // gcd of array
 T gcdArr(vector<T>& a) { return accumulate(a.begin() + 1, a.end(), a[0], [](T x, T y) {return gcd(x, y); }); }
 
