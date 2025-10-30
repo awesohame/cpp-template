@@ -69,6 +69,7 @@ template <typename T1, typename T2> ostream& operator<<(ostream& out, const pair
 template <typename... Args> ostream& operator<<(ostream& out, const tuple<Args...>& t) { apply([&](const auto&... args) { ((out << args << " "), ...); }, t); return out; }
 template <typename... Args> istream& operator>>(istream& in, tuple<Args...>& t) { apply([&](auto&... args) { ((in >> args), ...); }, t); return in; }
 
+void pl() { cout << '\n'; }
 template <typename T, typename... Args> void pl(const T& x, const Args&... args) { cout << x; ((cout << ' ' << args), ...); cout << endl; }
 
 // arrays
